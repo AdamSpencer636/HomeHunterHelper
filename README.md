@@ -1,4 +1,4 @@
-**Home Finder**
+**House Hunter Helper**
 
 Table of Contents
 =================

@@ -7,4 +7,5 @@ export default {
 	// serverBuildPath: "build/index.js",
 	tailwind: true,
 	postcss: true,
+	v2_errorBoundary: true,
 };

@@ -1,68 +1,62 @@
 import type { MetaFunction } from "@remix-run/node";
-import { UserCircle2 } from "lucide-react";
-import { Input } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
-import { Form, Link } from "@remix-run/react";
-import { useState } from "react";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { SignInButton, SignUpButton } from "@clerk/remix";
+
+import { LoaderFunction, redirect } from "@remix-run/node";
+import { getAuth } from "@clerk/remix/ssr.server.js";
+
 
 
 export const meta: MetaFunction = () => {
 	return [
 		{ title: "House Hunter Helper" },
 		{
-			name: "Helping you find homes and stay organized during your hunt.",
+			name: "Helping you stay organized during your hunt.",
 			content: "Start House Hunting Here!",
 		},
 	];
 };
 
-export default function Index() {
-	const [isLoading, setIsLoading] = useState(false);
+export const loader: LoaderFunction = async (args) => {
+	const { userId } = await getAuth(args);
 
+	if (userId) {
+		return redirect("/home");
+	}
+
+	return {};
+}
+
+export default function Index() {
 	return (
 		<div className="relative overflow-hidden">
 			<div className="blur-md w-screen h-screen bg-no-repeat bg-cover bg-center bg-fixed bg-mainimage"></div>
 			<div className="bg-black bg-opacity-20 absolute w-screen top-0 left-0 h-screen z-10">
-				<div className="flex justify-between p-7 w-screen">
-					<div>
-						<h1 className="text-2xl text-maintext font-bold">
-							House Hunter Helper
-						</h1>
-					</div>
-					<UserCircle2 size={40} color="white" />
-				</div>
-				<div className="h-full flex justify-center items-center">
-					<Form method="post" action="/search">
-						<div className="flex flex-col justify-center items-center">
-							<div className="flex items-center space-x-3">
-								<Input
-									type="text"
-									variant="flat"
-									label="Search"
-									radius="lg"
-									className="shadow-inner w-[20dvw]"
-									name="search"
-								/>
-								<Link
-									prefetch="intent"
-									to="/advanced-search"
-									className="underline text-blue-600 hover:text-violet-600"
-								>
-									Advanced Search
-								</Link>
-							</div>
+				<div className="h-full flex-col flex justify-center items-center space-y-3">
+					<h1 className="text-5xl text-maintext font-bold">
+						House Hunter Helper
+					</h1>
+					<p className="text-maintext text-center text-xl">
+						Helping you stay organized during your hunt.
+					</p>
+					<div className="flex">
+						<SignInButton mode="modal" afterSignInUrl="/home">
 							<Button
-								radius="lg"
-								variant="ghost"
-								className="w-[5vw] mt-5"
-								isLoading={isLoading}
-								type="submit"
+								color="primary"
+								className="m-2 hover:bg-slate-700 w-[10vw]"
 							>
-								Search
+								Login
 							</Button>
-						</div>
-					</Form>
+						</SignInButton>
+						<SignUpButton mode="modal" afterSignUpUrl="/home">
+							<Button
+								color="success"
+								className="m-2 hover:bg-green-600 w-[10vw]"
+							>
+								Register
+							</Button>
+						</SignUpButton>
+					</div>
 				</div>
 			</div>
 		</div>
